@@ -87,6 +87,7 @@ enum Ds1307SqwPinMode { OFF = 0x00, ON = 0x80, SquareWave1HZ = 0x10, SquareWave4
 class RTC_DS1307 {
 public:
     boolean begin(void);
+    boolean begin(uint8_t sda, uint8_t scl);
     static void adjust(const DateTime& dt);
     uint8_t isrunning(void);
     static DateTime now();

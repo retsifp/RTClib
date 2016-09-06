@@ -249,6 +249,11 @@ boolean RTC_DS1307::begin(void) {
   return true;
 }
 
+boolean RTC_DS1307::begin(uint8_t sda, uint8_t scl) {
+  Wire.begin(sda, scl);
+  return true;
+}
+
 uint8_t RTC_DS1307::isrunning(void) {
   Wire.beginTransmission(DS1307_ADDRESS);
   Wire._I2C_WRITE((byte)0);
