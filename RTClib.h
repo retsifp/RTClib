@@ -131,15 +131,21 @@ public:
 };
 
 // RTC using the internal millis() clock, has to be initialized before use
-// NOTE: this clock won't be correct once the millis() timer rolls over (>49d?)
 class RTC_Millis {
 public:
-    static void begin(const DateTime& dt) { adjust(dt); }
-    static void adjust(const DateTime& dt);
-    static DateTime now();
+    boolean begin(void);
+    void adjust(const DateTime& dt);
+    DateTime now();
+    void checkRollover();
 
 protected:
-    static long offset;
+    int32_t offset;
+    // Support for millis rollover:
+    // 1. Periodically compare current millis() with previosly captured millis
+    // 2. When previus millis is greater than current, a rollover count is increased
+    // 3. In calculating now(), use additional count of 2^32/1000 to compensate for rollovers
+    uint32_t prevMillis;
+    uint16_t countRollovers;
 };
 
 #endif // _RTCLIB_H_
