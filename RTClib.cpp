@@ -1,4 +1,4 @@
-// Code by JeeLabs http://news.jeelabs.org/code/
+// Code by JeeLabs http://jeelabs.org/2010/02/05/new-date-time-rtc-library/
 // Released to the public domain! Enjoy!
 
 #include <Wire.h>
