@@ -195,7 +195,7 @@ long DateTime::secondstime(void) const {
   return t;
 }
 
-bool DateTime::summertime_EU(uint8_t tzHours) {
+bool DateTime::summertime_EU(uint8_t tzHours) const {
 // European Daylight Savings Time calculation by "jurs" for German Arduino Forum
 // input parameter: tzHours (0=UTC, 1=MEZ)
 // return value: returns true during Daylight Saving Time, false otherwise
@@ -254,15 +254,19 @@ TimeSpan TimeSpan::operator-(const TimeSpan& right) {
 static uint8_t bcd2bin (uint8_t val) { return val - 6 * (val >> 4); }
 static uint8_t bin2bcd (uint8_t val) { return val + 6 * (val / 10); }
 
-bool RTC_DS1307::use_summertime_EU = true;
-
 boolean RTC_DS1307::begin(void) {
   Wire.begin();
+  use_summertime_EU = false;
   return true;
 }
 
 boolean RTC_DS1307::begin(uint8_t sda, uint8_t scl) {
+  return begin(sda, scl, false);
+}
+
+boolean RTC_DS1307::begin(uint8_t sda, uint8_t scl, bool use_DST) {
   Wire.begin(sda, scl);
+  use_summertime_EU = use_DST;
   return true;
 }
 
@@ -276,7 +280,10 @@ uint8_t RTC_DS1307::isrunning(void) {
   return !(ss>>7);
 }
 
-void RTC_DS1307::adjust(const DateTime& dt) {
+void RTC_DS1307::adjust(const DateTime& d) {
+  DateTime dt = d;
+  if (use_summertime_EU && dt.summertime_EU(1))
+    dt = dt - TimeSpan(3600);
   Wire.beginTransmission(DS1307_ADDRESS);
   Wire._I2C_WRITE((byte)0); // start at location 0
   Wire._I2C_WRITE(bin2bcd(dt.second()));
@@ -304,9 +311,9 @@ DateTime RTC_DS1307::now() {
   uint16_t y = bcd2bin(Wire._I2C_READ()) + 2000;
 
   DateTime dt = DateTime(y, m, d, hh, mm, ss);
-  if (!use_summertime_EU || !dt.summertime_EU(0))
-  	return dt;
-  return  dt + TimeSpan(3600);
+  if (use_summertime_EU && dt.summertime_EU(1))
+    return dt + TimeSpan(3600);
+  return  dt;
 }
 
 Ds1307SqwPinMode RTC_DS1307::readSqwPinMode() {

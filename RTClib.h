@@ -48,7 +48,7 @@ public:
     // 32-bit times as seconds since 1/1/1970
     uint32_t unixtime(void) const;
 
-    bool summertime_EU(uint8_t);
+    bool summertime_EU(uint8_t) const;
     DateTime operator+(const TimeSpan& span);
     DateTime operator-(const TimeSpan& span);
     bool operator<(const DateTime& right) const;
@@ -89,9 +89,10 @@ class RTC_DS1307 {
 public:
     boolean begin(void);
     boolean begin(uint8_t sda, uint8_t scl);
-    static void adjust(const DateTime& dt);
+    boolean begin(uint8_t sda, uint8_t scl, bool use_DST);
+    void adjust(const DateTime& dt);
     uint8_t isrunning(void);
-    static DateTime now();
+    DateTime now();
     static Ds1307SqwPinMode readSqwPinMode();
     static void writeSqwPinMode(Ds1307SqwPinMode mode);
     uint8_t readnvram(uint8_t address);
@@ -99,7 +100,8 @@ public:
     void writenvram(uint8_t address, uint8_t data);
     void writenvram(uint8_t address, uint8_t* buf, uint8_t size);
 
-    static bool use_summertime_EU;
+protected:
+    bool use_summertime_EU;
 };
 
 // RTC based on the DS3231 chip connected via I2C and the Wire library
