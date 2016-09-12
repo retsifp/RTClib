@@ -139,7 +139,7 @@ public:
     void adjust(const DateTime& dt);
     DateTime now();
     void checkRollover();
-
+    int32_t getOffset();
 protected:
     int32_t offset;
     // Support for millis rollover:
