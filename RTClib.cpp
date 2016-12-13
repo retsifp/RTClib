@@ -350,6 +350,11 @@ void RTC_DS1307::readnvram(uint8_t* buf, uint8_t size, uint8_t address) {
 }
 
 void RTC_DS1307::writenvram(uint8_t address, uint8_t* buf, uint8_t size) {
+  // TODO: Remove this function, only for legacy purposes here...
+  writenvram(buf, size, address);
+}
+
+void RTC_DS1307::writenvram(uint8_t* buf, uint8_t size, uint8_t address) {
   int addrByte = DS1307_NVRAM + address;
   Wire.beginTransmission(DS1307_ADDRESS);
   Wire._I2C_WRITE(addrByte);
@@ -366,7 +371,7 @@ uint8_t RTC_DS1307::readnvram(uint8_t address) {
 }
 
 void RTC_DS1307::writenvram(uint8_t address, uint8_t data) {
-  writenvram(address, &data, 1);
+  writenvram(&data, 1, address);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
