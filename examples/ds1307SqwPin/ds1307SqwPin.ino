@@ -16,7 +16,7 @@
 
 #if defined(ARDUINO_ARCH_SAMD)
 // for Zero, output on USB Serial console, remove line below if using programming port to program the Zero!
-   #define Serial SerialUSB
+#define Serial SerialUSB
 #endif
 
 RTC_DS1307 rtc;
@@ -27,42 +27,42 @@ Ds1307SqwPinMode modes[] = {OFF, ON, SquareWave1HZ, SquareWave4kHz, SquareWave8k
 
 
 void print_mode() {
-  Ds1307SqwPinMode mode = rtc.readSqwPinMode();
-  
-  Serial.print("Sqw Pin Mode: ");
-  switch(mode) {
-  case OFF:             Serial.println("OFF");       break;
-  case ON:              Serial.println("ON");        break;
-  case SquareWave1HZ:   Serial.println("1Hz");       break;
-  case SquareWave4kHz:  Serial.println("4.096kHz");  break;
-  case SquareWave8kHz:  Serial.println("8.192kHz");  break;
-  case SquareWave32kHz: Serial.println("32.768kHz"); break;
-  default:              Serial.println("UNKNOWN");   break;
-  }
+	Ds1307SqwPinMode mode = rtc.readSqwPinMode();
+
+	Serial.print("Sqw Pin Mode: ");
+	switch (mode) {
+		case OFF:             Serial.println("OFF");       break;
+		case ON:              Serial.println("ON");        break;
+		case SquareWave1HZ:   Serial.println("1Hz");       break;
+		case SquareWave4kHz:  Serial.println("4.096kHz");  break;
+		case SquareWave8kHz:  Serial.println("8.192kHz");  break;
+		case SquareWave32kHz: Serial.println("32.768kHz"); break;
+		default:              Serial.println("UNKNOWN");   break;
+	}
 }
 
 void setup () {
 
 #ifndef ESP8266
-  while (!Serial); // for Leonardo/Micro/Zero
+	while (!Serial); // for Leonardo/Micro/Zero
 #endif
 
-  Serial.begin(57600);
-  if (! rtc.begin()) {
-    Serial.println("Couldn't find RTC");
-    while (1);
-  }
+	Serial.begin(57600);
+	if (! rtc.begin()) {
+		Serial.println("Couldn't find RTC");
+		while (1);
+	}
 
-  print_mode();
+	print_mode();
 }
 
 void loop () {
-  rtc.writeSqwPinMode(modes[mode_index++]);
-  print_mode();
+	rtc.writeSqwPinMode(modes[mode_index++]);
+	print_mode();
 
-  if (mode_index > 5) {
-    mode_index = 0;
-  }
+	if (mode_index > 5) {
+		mode_index = 0;
+	}
 
-  delay(5000);
+	delay(5000);
 }
